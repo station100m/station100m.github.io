@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>後台管理｜車站100米民宿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,300;1,6..72,400&family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4efe6;--paper-2:#ebe4d7;--card:#fbf8f3;--ink:#27231f;--ink-2:#5b544c;--ink-3:#8c8378;--line:#d8cfc0;--oak:#a8784a;--forest:#2f3a2f;--clay:#b8582f;--serif:"Noto Serif TC",serif;--sans:"Noto Sans TC","PingFang TC",system-ui,sans-serif;--latin:"Newsreader",Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7;letter-spacing:.02em;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+a{color:inherit}
+.label{font-family:var(--latin);font-style:italic;color:var(--ink-3);font-size:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border:1px solid var(--ink);font-size:14px;letter-spacing:.14em;transition:background .2s,color .2s;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:#000}
+.btn.ghost{border-color:var(--line)}
+.btn.sm{padding:6px 12px;font-size:13px;letter-spacing:.08em}
+.btn.danger:hover{background:var(--clay);border-color:var(--clay);color:#fff}
+.btn:disabled{opacity:.4;cursor:default}
+input[type=text],input[type=password],input[type=date],textarea,select{width:100%;background:var(--card);border:1px solid var(--line);padding:10px 12px;outline:none;transition:border-color .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--ink)}
+label.f{display:block;font-size:13px;letter-spacing:.12em;color:var(--ink-2);margin:0 0 6px}
+.field{margin-bottom:18px}
+
+/* login */
+.login{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.login .pic{background:#3a3129 url("https://www.sioom.com.tw/upfile/20201007145902-6164.jpg") center/cover}
+.login .form{display:flex;flex-direction:column;justify-content:center;padding:48px clamp(24px,7vw,110px)}
+.login h1{font-family:var(--serif);font-weight:500;font-size:30px;letter-spacing:.14em;margin:6px 0 34px}
+.login .hint{font-size:12px;color:var(--ink-3);margin-top:16px;line-height:1.9}
+.err{color:var(--clay);font-size:13px;min-height:22px;margin-top:8px}
+
+/* app */
+.app{display:none;min-height:100vh}
+body.authed .login{display:none}
+body.authed .app{display:block}
+.top{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1280px;margin:0 auto;padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:baseline;gap:12px}
+.brand b{font-family:var(--serif);font-weight:600;font-size:18px;letter-spacing:.12em}
+.brand span{font-size:12px;letter-spacing:.2em;color:var(--ink-3)}
+.top .act{display:flex;gap:18px;align-items:center;font-size:13px;letter-spacing:.1em}
+.top .act a,.top .act button{color:var(--ink-2)}
+.top .act a:hover,.top .act button:hover{color:var(--ink)}
+.tabs{max-width:1280px;margin:0 auto;padding:0 28px;display:flex;gap:30px}
+.tabs button{padding:14px 0 12px;font-size:14px;letter-spacing:.16em;color:var(--ink-3);border-bottom:1px solid transparent}
+.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--ink)}
+main{max-width:1280px;margin:0 auto;padding:40px 28px 140px}
+.pane{display:none}.pane.on{display:block}
+.ph{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:26px}
+.ph h2{font-family:var(--serif);font-weight:500;font-size:26px;letter-spacing:.14em;line-height:1.4}
+.ph p{color:var(--ink-2);font-size:14px;margin-top:4px}
+
+/* vacancy editor */
+.tools{display:flex;flex-wrap:wrap;gap:22px;align-items:center;justify-content:space-between;padding:16px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--line)}
+.brush{display:flex;gap:6px;align-items:center;font-size:13px;letter-spacing:.1em;color:var(--ink-2)}
+.brush button{display:flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--line);font-size:13px;letter-spacing:.1em}
+.brush button[aria-pressed=true]{border-color:var(--ink);background:var(--card)}
+.mnav{display:flex;align-items:center;gap:14px;font-family:var(--latin);font-size:18px}
+.mnav button{width:36px;height:36px;border:1px solid var(--line)}
+.mnav button:hover{border-color:var(--ink)}
+.st{display:inline-block;width:12px;height:12px;border-radius:50%}
+.st.open{border:1.5px solid var(--forest)}
+.st.full{background:var(--clay)}
+.st.ask{width:12px;height:2px;border-radius:0;background:var(--ink-3)}
+.grid-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-top:0;user-select:none}
+table.g{border-collapse:collapse;min-width:100%}
+table.g th,table.g td{border-right:1px solid #ece5d9;border-bottom:1px solid #ece5d9;text-align:center}
+table.g thead th{padding:8px 0;min-width:40px;font-weight:400;cursor:pointer}
+table.g thead th:hover{background:var(--paper-2)}
+table.g thead .w{display:block;font-size:10px;color:var(--ink-3);letter-spacing:.1em}
+table.g thead .d{display:block;font-family:var(--latin);font-size:17px;line-height:1.2}
+table.g .we{background:rgba(168,120,74,.08)}
+table.g .past{opacity:.35;pointer-events:none}
+table.g .today .d{color:var(--clay)}
+table.g th.rm{position:sticky;left:0;z-index:1;background:var(--card);text-align:left;padding:0 16px;min-width:120px;cursor:pointer;font-weight:400;white-space:nowrap}
+table.g th.rm:hover{background:var(--paper-2)}
+table.g th.rm b{font-family:var(--serif);font-weight:500;letter-spacing:.08em}
+table.g td{height:48px;cursor:pointer;transition:background .15s}
+table.g td:hover{background:var(--paper-2)}
+table.g tfoot td{height:38px;cursor:default;font-family:var(--latin);font-size:15px;color:var(--ink-2)}
+table.g tfoot td:hover{background:none}
+.tip{font-size:13px;color:var(--ink-3);margin-top:12px;line-height:1.9}
+.quick{display:flex;flex-wrap:wrap;gap:8px}
+
+/* notices */
+.n-grid{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:start}
+.n-list{border-top:1px solid var(--ink)}
+.n-row{display:grid;grid-template-columns:100px 1fr auto;gap:18px;align-items:start;padding:18px 0;border-bottom:1px solid var(--line)}
+.n-row time{font-family:var(--latin);font-size:16px;color:var(--ink-3)}
+.n-row h3{font-family:var(--serif);font-weight:500;font-size:17px;letter-spacing:.08em}
+.n-row p{font-size:13px;color:var(--ink-2);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.n-row .ops{display:flex;gap:6px}
+.pin{display:inline-block;font-family:var(--sans);font-size:11px;letter-spacing:.14em;color:var(--clay);border:1px solid var(--clay);padding:0 6px;margin-right:8px;vertical-align:2px}
+.n-row.editing{background:var(--card);box-shadow:-12px 0 0 var(--card),12px 0 0 var(--card)}
+.card{background:var(--card);border:1px solid var(--line);padding:28px;position:sticky;top:140px}
+.card h3{font-family:var(--serif);font-weight:500;font-size:18px;letter-spacing:.12em;margin-bottom:20px}
+.chk{display:flex;align-items:center;gap:10px;font-size:14px;margin-bottom:22px}
+.chk input{width:16px;height:16px;accent-color:var(--ink)}
+.empty{padding:30px 0;color:var(--ink-3);font-size:14px}
+
+/* settings */
+.set{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.set section{background:var(--card);border:1px solid var(--line);padding:28px}
+.set h3{font-family:var(--serif);font-weight:500;font-size:18px;letter-spacing:.12em;margin-bottom:6px}
+.set .desc{font-size:13px;color:var(--ink-2);margin-bottom:22px;line-height:1.9}
+.mode{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.mode label{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:1px solid var(--line);cursor:pointer;font-size:14px}
+.mode label:has(input:checked){border-color:var(--ink)}
+.mode input{margin-top:5px;accent-color:var(--ink)}
+.mode small{display:block;color:var(--ink-3);font-size:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* publish bar */
+.pub{position:fixed;left:50%;bottom:22px;transform:translate(-50%,140%);z-index:30;background:var(--ink);color:var(--paper);display:flex;align-items:center;gap:22px;padding:12px 12px 12px 24px;box-shadow:0 10px 40px rgba(0,0,0,.18);transition:transform .35s cubic-bezier(.2,.7,.2,1);font-size:14px;letter-spacing:.08em;max-width:calc(100% - 32px)}
+.pub.show{transform:translate(-50%,0)}
+.pub .btn{border-color:var(--paper);color:var(--paper)}
+.pub .btn.solid{background:var(--paper);color:var(--ink)}
+.pub .btn:hover{background:var(--paper);color:var(--ink)}
+.toast{position:fixed;top:78px;left:50%;transform:translate(-50%,-20px);opacity:0;z-index:40;background:var(--forest);color:#fff;padding:10px 20px;font-size:14px;letter-spacing:.08em;transition:all .3s;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.bad{background:var(--clay)}
+.demo-tag{position:fixed;right:16px;bottom:16px;z-index:25;background:rgba(31,27,23,.88);color:#efe8dc;font-size:11px;letter-spacing:.14em;padding:8px 12px;line-height:1.6;pointer-events:none}
+.demo-tag b{font-weight:500;color:#d8b48a}
+.wm{position:fixed;inset:0;z-index:24;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='260'%3E%3Cg transform='rotate(-24 210 130)' fill='%23877a6a' fill-opacity='0.10' font-family='Helvetica,Arial,sans-serif' text-anchor='middle'%3E%3Ctext x='210' y='124' font-size='19' letter-spacing='3'%3EDEMO %C2%B7 NINTH LAB%3C/text%3E%3Ctext x='210' y='150' font-size='13' letter-spacing='4'%3E%E4%B9%9D%E8%99%9F%E7%A7%91%E6%8A%80%E5%B7%A5%E4%BD%9C%E5%AE%A4 %E7%A4%BA%E7%AF%84%E7%89%88%E6%9C%AC%3C/text%3E%3C/g%3E%3C/svg%3E")}
+
+@media (max-width:900px){
+  .login{grid-template-columns:1fr}.login .pic{height:32vh}
+  .n-grid,.set{grid-template-columns:1fr}
+  .card{position:static}
+  .top .in,.tabs,main{padding-left:16px;padding-right:16px}
+  .brand span{display:none}
+  .tabs{gap:22px;overflow-x:auto}
+  .n-row{grid-template-columns:1fr auto}
+  .n-row time{grid-column:1/-1}
+  .demo-tag{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wm" aria-hidden="true"></div>
+<div class="demo-tag" aria-hidden="true"><b>示範版本</b>　Design by 九號科技工作室 NINTH LAB</div>
+
+<!-- LOGIN -->
+<div class="login">
+  <div class="pic" aria-hidden="true"></div>
+  <form class="form" id="loginForm" autocomplete="off">
+    <span class="label">Station 100m · Admin</span>
+    <h1>車站100米　後台</h1>
+    <div class="field"><label class="f" for="pw">管理密碼</label><input type="password" id="pw" autofocus></div>
+    <button class="btn solid" type="submit" style="width:100%">登入</button>
+    <p class="err" id="loginErr"></p>
+    <p class="hint">示範版密碼：station100<br>正式版會改為民宿專屬密碼，並以 GitHub 金鑰保護發布權限。</p>
+  </form>
+</div>
+
+<!-- APP -->
+<div class="app">
+  <header class="top">
+    <div class="in">
+      <div class="brand"><b>車站100米</b><span>後台管理</span></div>
+      <div class="act"><a href="index.html" target="_blank" rel="noopener">查看網站 ↗</a><button id="logout">登出</button></div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="vac">空房管理</button>
+      <button role="tab" aria-selected="false" data-tab="news">最新公告</button>
+      <button role="tab" aria-selected="false" data-tab="set">發布設定</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 空房 -->
+    <div class="pane on" id="p-vac">
+      <div class="ph">
+        <div><h2>空房管理</h2><p>點選格子即可切換狀態。按住拖曳可以一次塗滿多格。</p></div>
+        <div class="quick">
+          <button class="btn sm ghost" id="qWeekend">本月週五六設為已滿</button>
+          <button class="btn sm ghost" id="qReset">本月全部設為可預訂</button>
+        </div>
+      </div>
+      <div class="tools">
+        <div class="brush" id="brush">
+          <span>畫筆</span>
+          <button aria-pressed="true" data-v="open"><i class="st open"></i>可預訂</button>
+          <button aria-pressed="false" data-v="full"><i class="st full"></i>已滿</button>
+          <button aria-pressed="false" data-v="ask"><i class="st ask"></i>請洽詢</button>
+          <button aria-pressed="false" data-v="cycle" title="每次點擊依序切換">循環切換</button>
+        </div>
+        <div class="mnav"><button id="mPrev" aria-label="上個月">←</button><span id="mLabel"></span><button id="mNext" aria-label="下個月">→</button></div>
+      </div>
+      <div class="grid-wrap"><table class="g" id="grid"></table></div>
+      <p class="tip">點日期＝整天套用畫筆　・　點房名＝整個月套用畫筆　・　過去的日期不可編輯　・　未設定的日期，網站上會顯示「請洽詢」。</p>
+    </div>
+
+    <!-- 公告 -->
+    <div class="pane" id="p-news">
+      <div class="ph"><div><h2>最新公告</h2><p>網站首頁會顯示最新 4 則，置頂公告永遠排在最前面。</p></div></div>
+      <div class="n-grid">
+        <div class="n-list" id="nList"></div>
+        <form class="card" id="nForm">
+          <h3 id="nFormTitle">新增公告</h3>
+          <div class="field"><label class="f" for="nTitle">標題</label><input type="text" id="nTitle" maxlength="60" required></div>
+          <div class="field"><label class="f" for="nDate">日期</label><input type="date" id="nDate" required></div>
+          <div class="field"><label class="f" for="nBody">內容</label><textarea id="nBody" rows="6" maxlength="600"></textarea></div>
+          <label class="chk"><input type="checkbox" id="nPin">置頂這則公告</label>
+          <div style="display:flex;gap:10px"><button class="btn solid" type="submit" id="nSubmit">加入公告</button><button class="btn ghost" type="button" id="nCancel" hidden>取消編輯</button></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 設定 -->
+    <div class="pane" id="p-set">
+      <div class="ph"><div><h2>發布設定</h2><p>決定按下「發布」之後，資料要送到哪裡。</p></div></div>
+      <div class="set">
+        <section>
+          <h3>發布方式</h3>
+          <p class="desc">網站架設在 GitHub Pages，發布時後台會直接更新網站上的 data/site.json，約 1 分鐘後所有訪客都會看到。</p>
+          <div class="mode">
+            <label><input type="radio" name="mode" value="demo" checked><span>示範模式<small>變更只存在這台電腦的瀏覽器，用來預覽效果。</small></span></label>
+            <label><input type="radio" name="mode" value="github"><span>正式發布（GitHub）<small>需填入下方的儲存庫與存取金鑰。</small></span></label>
+          </div>
+          <div class="row2">
+            <div class="field"><label class="f" for="ghOwner">帳號 / 組織</label><input type="text" id="ghOwner" placeholder="例：sioom-bnb"></div>
+            <div class="field"><label class="f" for="ghRepo">儲存庫</label><input type="text" id="ghRepo" placeholder="例：sioom-bnb.github.io"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label class="f" for="ghBranch">分支</label><input type="text" id="ghBranch" value="main"></div>
+            <div class="field"><label class="f" for="ghToken">存取金鑰（Fine-grained token）</label><input type="password" id="ghToken" placeholder="github_pat_…"></div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn solid" id="saveSet">儲存設定</button><button class="btn ghost" id="testGh">測試連線</button></div>
+          <p class="tip">金鑰只儲存在這台電腦的瀏覽器中，權限僅需該儲存庫的 Contents 讀寫。</p>
+        </section>
+        <section>
+          <h3>備份與還原</h3>
+          <p class="desc">可以把目前所有空房與公告下載成檔案保存，或從備份檔還原。</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn" id="dl">下載備份</button>
+            <label class="btn ghost" style="cursor:pointer">從備份還原<input type="file" id="ul" accept=".json,application/json" hidden></label>
+            <button class="btn ghost danger" id="discard">放棄未發布的變更</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="pub" id="pub"><span id="pubMsg">有尚未發布的變更</span><button class="btn sm" id="pubPreview">預覽網站</button><button class="btn sm solid" id="pubGo">發布</button></div>
+<div class="toast" id="toast"></div>
+<script type="application/json" id="seed">{
+ "updated": "2026-09-26T11:00:00+08:00",
+ "notices": [
+  {
+   "id": "n3",
+   "date": "2026-09-20",
+   "pinned": true,
+   "title": "國慶連假（10/9–10/11）僅剩少量房間",
+   "body": "連假期間雙人房最多入住 3 人，門口車位不保證。欲訂房請直接以 LINE 或電話詢問，我們會盡快回覆。"
+  },
+  {
+   "id": "n2",
+   "date": "2026-09-01",
+   "pinned": false,
+   "title": "花蓮觀光補助：連住兩晚，最高折 3,400 元",
+   "body": "搭配花蓮觀光補助與民宿加碼，連住兩晚最高可折 3,400 元，名額有限，詳情請以 LINE 詢問。"
+  },
+  {
+   "id": "n1",
+   "date": "2026-08-15",
+   "pinned": false,
+   "title": "2027 春節早鳥訂房開放中",
+   "body": "春節期間訂金為住房總價全額，早鳥享優惠價，欲預訂請來電或 LINE 洽詢。"
+  }
+ ],
+ "availability": {
+  "2026-09-26": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-09-27": {
+   "01": "full",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-09-28": {
+   "01": "open",
+   "02": "open",
+   "03": "full",
+   "04": "full",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-09-29": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "open",
+   "06": "full"
+  },
+  "2026-09-30": {
+   "01": "full",
+   "02": "full",
+   "03": "open",
+   "04": "open",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-10-01": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-02": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-03": {
+   "01": "open",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-10-04": {
+   "01": "open",
+   "02": "full",
+   "03": "open",
+   "04": "full",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-05": {
+   "01": "full",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-06": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-07": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-10-08": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-09": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-10": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-11": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-12": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-13": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-10-14": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-15": {
+   "01": "open",
+   "02": "full",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-16": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-17": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-18": {
+   "01": "full",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "open",
+   "06": "full"
+  },
+  "2026-10-19": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-20": {
+   "01": "open",
+   "02": "open",
+   "03": "full",
+   "04": "full",
+   "05": "open",
+   "06": "full"
+  },
+  "2026-10-21": {
+   "01": "open",
+   "02": "full",
+   "03": "full",
+   "04": "open",
+   "05": "open",
+   "06": "full"
+  },
+  "2026-10-22": {
+   "01": "open",
+   "02": "full",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-23": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "open",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-10-24": {
+   "01": "full",
+   "02": "full",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-25": {
+   "01": "open",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "open",
+   "06": "full"
+  },
+  "2026-10-26": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-27": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-10-28": {
+   "01": "full",
+   "02": "full",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-29": {
+   "01": "open",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-10-30": {
+   "01": "open",
+   "02": "full",
+   "03": "full",
+   "04": "open",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-10-31": {
+   "01": "open",
+   "02": "full",
+   "03": "full",
+   "04": "open",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-11-01": {
+   "01": "full",
+   "02": "full",
+   "03": "open",
+   "04": "open",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-11-02": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-11-03": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-04": {
+   "01": "open",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-11-05": {
+   "01": "full",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-06": {
+   "01": "full",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-11-07": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-11-08": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-09": {
+   "01": "open",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-11-10": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-11": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-12": {
+   "01": "open",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "full"
+  },
+  "2026-11-13": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-11-14": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "full",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-15": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-16": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-17": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-11-18": {
+   "01": "open",
+   "02": "full",
+   "03": "open",
+   "04": "open",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-11-19": {
+   "01": "open",
+   "02": "open",
+   "03": "full",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-20": {
+   "01": "full",
+   "02": "full",
+   "03": "full",
+   "04": "open",
+   "05": "full",
+   "06": "full"
+  },
+  "2026-11-21": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "full",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-11-22": {
+   "01": "open",
+   "02": "open",
+   "03": "full",
+   "04": "full",
+   "05": "open",
+   "06": "open"
+  },
+  "2026-11-23": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "full",
+   "06": "open"
+  },
+  "2026-11-24": {
+   "01": "full",
+   "02": "open",
+   "03": "open",
+   "04": "open",
+   "05": "open",
+   "06": "open"
+  }
+ }
+}</script>
+<script>
+var PW_HASH='20f4e07258482feaef7bc1b82c98ccd96091c73a840c6d3c59d42e42fe23a2f2';
+</script>
+<script>
+(function(){
+var ROOMS=[['01','雙人房 01'],['02','雙人房 02'],['03','雙人房 03'],['04','雙人房 04'],['05','雙人房 05'],['06','四人房']];
+var WD=['日','一','二','三','四','五','六'];
+var K={draft:'sioom_admin_draft',preview:'sioom_site_preview',set:'sioom_admin_settings',auth:'sioom_admin_auth'};
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(_){return null}}
+function sget(k){try{return sessionStorage.getItem(k)}catch(_){return null}}
+function sset(k,v){try{v===null?sessionStorage.removeItem(k):sessionStorage.setItem(k,v)}catch(_){}}
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var $=function(id){return document.getElementById(id)};
+function toast(m,bad){var t=$('toast');t.textContent=m;t.className='toast on'+(bad?' bad':'');clearTimeout(t._t);t._t=setTimeout(function(){t.className='toast'},2600)}
+
+/* ---- auth ---- */
+async function sha(s){var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}
+$('loginForm').onsubmit=async function(e){e.preventDefault();var ok=false;try{ok=(await sha($('pw').value))===PW_HASH}catch(_){ok=$('pw').value==='station100'}
+  if(ok){sset(K.auth,'1');start()}else{$('loginErr').textContent='密碼不正確，請再試一次。'}};
+$('logout').onclick=function(){sset(K.auth,null);location.reload()};
+
+/* ---- data ---- */
+var DATA,BASE,dirty=false;
+function load(){
+  var d=ls(K.draft);if(d){try{return Promise.resolve(JSON.parse(d))}catch(_){}}
+  var p=ls(K.preview);if(p){try{return Promise.resolve(JSON.parse(p))}catch(_){}}
+  return fetch('data/site.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).catch(function(){return JSON.parse($('seed').textContent)});
+}
+function markDirty(){dirty=true;DATA.updated=new Date().toISOString();ls(K.draft,JSON.stringify(DATA));$('pub').classList.add('show')}
+function clean(){dirty=false;ls(K.draft,null);$('pub').classList.remove('show')}
+
+function start(){
+  document.body.classList.add('authed');
+  load().then(function(d){DATA=d;DATA.availability=DATA.availability||{};DATA.notices=DATA.notices||[];
+    if(ls(K.draft))$('pub').classList.add('show');
+    renderGrid();renderNotices();loadSettings();});
+}
+
+/* ---- tabs ---- */
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){b.onclick=function(){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(x){x.setAttribute('aria-selected',x===b)});
+  [].forEach.call(document.querySelectorAll('.pane'),function(p){p.classList.toggle('on',p.id==='p-'+b.dataset.tab)});
+}});
+
+/* ---- vacancy grid ---- */
+var brush='open',month=new Date();month.setDate(1);month.setHours(0,0,0,0);
+var today=new Date();today.setHours(0,0,0,0);
+[].forEach.call(document.querySelectorAll('#brush button'),function(b){b.onclick=function(){brush=b.dataset.v;[].forEach.call(document.querySelectorAll('#brush button'),function(x){x.setAttribute('aria-pressed',x===b)})}});
+function getS(date,id){var a=DATA.availability[date];return a&&a[id]?a[id]:'ask'}
+function setS(date,id,v){(DATA.availability[date]=DATA.availability[date]||{})[id]=v}
+function nextS(s){return {open:'full',full:'ask',ask:'open'}[s]}
+function daysOfMonth(){var out=[],d=new Date(month);while(d.getMonth()===month.getMonth()){out.push(new Date(d));d.setDate(d.getDate()+1)}return out}
+function renderGrid(){
+  var ds=daysOfMonth();
+  $('mLabel').textContent=month.getFullYear()+' 年 '+(month.getMonth()+1)+' 月';
+  var h='<thead><tr><th class="rm"></th>'+ds.map(function(d){var c=[];if(d.getDay()===5||d.getDay()===6)c.push('we');if(d<today)c.push('past');if(+d===+today)c.push('today');return '<th class="'+c.join(' ')+'" data-date="'+ymd(d)+'"><span class="w">'+WD[d.getDay()]+'</span><span class="d">'+d.getDate()+'</span></th>'}).join('')+'</tr></thead><tbody>';
+  ROOMS.forEach(function(r){
+    h+='<tr><th class="rm" data-room="'+r[0]+'"><b>'+r[1]+'</b></th>'+ds.map(function(d){var c=[];if(d.getDay()===5||d.getDay()===6)c.push('we');if(d<today)c.push('past');var s=getS(ymd(d),r[0]);return '<td class="'+c.join(' ')+'" data-date="'+ymd(d)+'" data-room="'+r[0]+'"><i class="st '+s+'"></i></td>'}).join('')+'</tr>';
+  });
+  h+='</tbody><tfoot><tr><th class="rm" style="cursor:default;font-size:12px;color:#8c8378">剩餘</th>'+ds.map(function(d){var n=ROOMS.filter(function(r){return getS(ymd(d),r[0])==='open'}).length;return '<td class="'+(d<today?'past':'')+'">'+n+'</td>'}).join('')+'</tr></tfoot>';
+  $('grid').innerHTML=h;
+  var min=new Date(today);min.setDate(1);$('mPrev').disabled=month<=min;
+  var th=$('grid').querySelector('thead th.today');var w=$('grid').parentNode;w.scrollLeft=th?Math.max(0,th.offsetLeft-120-40*2):0;
+}
+function apply(td){var d=td.dataset.date,r=td.dataset.room;var v=brush==='cycle'?nextS(getS(d,r)):brush;if(getS(d,r)===v&&brush!=='cycle')return;setS(d,r,v);td.firstChild.className='st '+v;markDirty();updateFoot()}
+function updateFoot(){var ds=daysOfMonth(),cells=$('grid').querySelectorAll('tfoot td');ds.forEach(function(d,i){cells[i].textContent=ROOMS.filter(function(r){return getS(ymd(d),r[0])==='open'}).length})}
+var painting=false;
+$('grid').addEventListener('mousedown',function(e){var td=e.target.closest('td[data-room]');if(!td)return;painting=brush!=='cycle';apply(td);e.preventDefault()});
+$('grid').addEventListener('mouseover',function(e){if(!painting)return;var td=e.target.closest('td[data-room]');if(td)apply(td)});
+window.addEventListener('mouseup',function(){painting=false});
+$('grid').addEventListener('touchstart',function(e){var td=e.target.closest('td[data-room]');if(td){apply(td);e.preventDefault()}},{passive:false});
+$('grid').addEventListener('click',function(e){
+  var th=e.target.closest('th');if(!th||th.classList.contains('past'))return;var v=brush==='cycle'?'full':brush;
+  if(th.dataset.date){ROOMS.forEach(function(r){setS(th.dataset.date,r[0],v)});markDirty();renderGrid()}
+  else if(th.dataset.room){daysOfMonth().forEach(function(d){if(d>=today)setS(ymd(d),th.dataset.room,v)});markDirty();renderGrid()}
+});
+$('mPrev').onclick=function(){month.setMonth(month.getMonth()-1);renderGrid()};
+$('mNext').onclick=function(){month.setMonth(month.getMonth()+1);renderGrid()};
+$('qWeekend').onclick=function(){daysOfMonth().forEach(function(d){if(d>=today&&(d.getDay()===5||d.getDay()===6))ROOMS.forEach(function(r){setS(ymd(d),r[0],'full')})});markDirty();renderGrid();toast('已將本月週五、週六設為已滿')};
+$('qReset').onclick=function(){if(!confirmSoft('確定將本月（今天以後）全部設為可預訂？'))return;daysOfMonth().forEach(function(d){if(d>=today)ROOMS.forEach(function(r){setS(ymd(d),r[0],'open')})});markDirty();renderGrid()};
+function confirmSoft(m){return window.confirm(m)}
+
+/* ---- notices ---- */
+var editing=null;
+function renderNotices(){
+  var ns=DATA.notices.slice().sort(function(a,b){return (b.pinned?1:0)-(a.pinned?1:0)||(b.date>a.date?1:-1)});
+  $('nList').innerHTML=ns.length?ns.map(function(n){return '<div class="n-row'+(editing===n.id?' editing':'')+'"><time>'+esc(n.date).replace(/-/g,'.')+'</time><div><h3>'+(n.pinned?'<span class="pin">置頂</span>':'')+esc(n.title)+'</h3><p>'+esc(n.body)+'</p></div><div class="ops"><button class="btn sm ghost" data-edit="'+n.id+'">編輯</button><button class="btn sm ghost danger" data-del="'+n.id+'">刪除</button></div></div>'}).join(''):'<p class="empty">還沒有公告，從右側新增第一則。</p>';
+}
+function resetForm(){editing=null;$('nForm').reset();$('nDate').value=ymd(new Date());$('nFormTitle').textContent='新增公告';$('nSubmit').textContent='加入公告';$('nCancel').hidden=true;renderNotices()}
+$('nList').onclick=function(e){
+  var ed=e.target.dataset.edit,dl=e.target.dataset.del;
+  if(ed){var n=DATA.notices.find(function(x){return x.id===ed});editing=ed;$('nTitle').value=n.title;$('nDate').value=n.date;$('nBody').value=n.body;$('nPin').checked=!!n.pinned;$('nFormTitle').textContent='編輯公告';$('nSubmit').textContent='儲存修改';$('nCancel').hidden=false;renderNotices();$('nTitle').focus()}
+  if(dl&&confirmSoft('確定刪除這則公告？')){DATA.notices=DATA.notices.filter(function(x){return x.id!==dl});if(editing===dl)resetForm();markDirty();renderNotices();toast('公告已刪除')}
+};
+$('nCancel').onclick=resetForm;
+$('nForm').onsubmit=function(e){e.preventDefault();
+  var o={title:$('nTitle').value.trim(),date:$('nDate').value,body:$('nBody').value.trim(),pinned:$('nPin').checked};
+  if(!o.title)return;
+  if(editing){Object.assign(DATA.notices.find(function(x){return x.id===editing}),o);toast('公告已更新')}
+  else{o.id='n'+Date.now().toString(36);DATA.notices.push(o);toast('公告已加入')}
+  markDirty();resetForm();
+};
+$('nDate').value=ymd(new Date());
+
+/* ---- settings ---- */
+function getSet(){try{return JSON.parse(ls(K.set)||'{}')}catch(_){return {}}}
+function loadSettings(){var s=getSet();$('ghOwner').value=s.owner||'';$('ghRepo').value=s.repo||'';$('ghBranch').value=s.branch||'main';$('ghToken').value=s.token||'';[].forEach.call(document.getElementsByName('mode'),function(r){r.checked=r.value===(s.mode||'demo')})}
+function readSet(){return {mode:document.querySelector('input[name=mode]:checked').value,owner:$('ghOwner').value.trim(),repo:$('ghRepo').value.trim(),branch:$('ghBranch').value.trim()||'main',token:$('ghToken').value.trim()}}
+$('saveSet').onclick=function(){ls(K.set,JSON.stringify(readSet()));toast('設定已儲存')};
+function gh(s,method,body){return fetch('https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/data/site.json'+(method==='GET'?'?ref='+encodeURIComponent(s.branch):''),{method:method,headers:{'Authorization':'Bearer '+s.token,'Accept':'application/vnd.github+json'},body:body?JSON.stringify(body):undefined})}
+$('testGh').onclick=function(){var s=readSet();if(!s.owner||!s.repo||!s.token){toast('請先填寫帳號、儲存庫與金鑰',true);return}
+  gh(s,'GET').then(function(r){toast(r.ok?'連線成功，可以正式發布':'連線失敗（'+r.status+'），請檢查設定',!r.ok)}).catch(function(){toast('無法連線到 GitHub',true)})};
+function b64(str){var bytes=new TextEncoder().encode(str),bin='';bytes.forEach(function(b){bin+=String.fromCharCode(b)});return btoa(bin)}
+
+/* ---- publish ---- */
+$('pubPreview').onclick=function(){ls(K.preview,JSON.stringify(DATA));window.open('index.html#vacancy','_blank')};
+$('pubGo').onclick=async function(){
+  var s=getSet();DATA.updated=new Date().toISOString();var json=JSON.stringify(DATA,null,1);
+  if(s.mode!=='github'){ls(K.preview,json);clean();toast('已發布（示範模式：僅此瀏覽器可見）');return}
+  $('pubGo').disabled=true;$('pubMsg').textContent='發布中…';
+  try{
+    var r=await gh(s,'GET'),sha;if(r.ok){sha=(await r.json()).sha}else if(r.status!==404)throw r.status;
+    var w=await gh(s,'PUT',{message:'後台更新：空房與公告 '+new Date().toLocaleString('zh-TW'),content:b64(json),sha:sha,branch:s.branch});
+    if(!w.ok)throw w.status;
+    ls(K.preview,null);clean();toast('發布成功，約 1 分鐘後網站會更新');
+  }catch(err){toast('發布失敗（'+err+'），請檢查發布設定',true)}
+  finally{$('pubGo').disabled=false;$('pubMsg').textContent='有尚未發布的變更'}
+};
+
+/* ---- backup ---- */
+$('dl').onclick=function(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DATA,null,1)],{type:'application/json'}));a.download='site-backup-'+ymd(new Date())+'.json';a.click()};
+$('ul').onchange=function(){var f=this.files[0];if(!f)return;f.text().then(function(t){var d=JSON.parse(t);if(!d.availability||!d.notices)throw 0;DATA=d;markDirty();renderGrid();renderNotices();toast('已從備份還原，記得按「發布」')}).catch(function(){toast('檔案格式不正確',true)})};
+$('discard').onclick=function(){if(!confirmSoft('放棄所有未發布的變更？'))return;ls(K.draft,null);ls(K.preview,null);location.reload()};
+
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue=''}});
+document.addEventListener('contextmenu',function(e){if(!e.target.closest('input,textarea'))e.preventDefault()});
+
+if(sget(K.auth)==='1')start();
+})();
+</script>
+</body>
+</html>
