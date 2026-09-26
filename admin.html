@@ -878,7 +878,7 @@ $('testGh').onclick=function(){var s=readSet();if(!s.owner||!s.repo||!s.token){t
 function b64(str){var bytes=new TextEncoder().encode(str),bin='';bytes.forEach(function(b){bin+=String.fromCharCode(b)});return btoa(bin)}
 
 /* ---- publish ---- */
-$('pubPreview').onclick=function(){ls(K.preview,JSON.stringify(DATA));window.open('index.html#vacancy','_blank')};
+$('pubPreview').onclick=function(){ls(K.preview,JSON.stringify(DATA));window.open('vacancy.html','_blank')};
 $('pubGo').onclick=async function(){
   var s=getSet();DATA.updated=new Date().toISOString();var json=JSON.stringify(DATA,null,1);
   if(s.mode!=='github'){ls(K.preview,json);clean();toast('已發布（示範模式：僅此瀏覽器可見）');return}
